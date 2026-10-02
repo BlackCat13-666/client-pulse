@@ -134,17 +134,6 @@ public final class ClientPulseClient implements ClientModInitializer {
             }
         }
 
-        int effectY = row + 72;
-        int shown = 0;
-        for (MobEffectInstance effect : p.getActiveEffects()) {
-            if (shown++ >= 3) break;
-            String name = effect.getEffect().value().getDisplayName().getString();
-            String time = formatTicks(effect.getDuration());
-            g.drawString(mc.font, name, x + 9, effectY, 0xFFE7E9EF, false);
-            g.drawString(mc.font, time, x + width - 42, effectY, secondary, false);
-            effectY += 11;
-        }
-
         int cx = mc.getWindow().getGuiScaledWidth() / 2;
         int cy = mc.getWindow().getGuiScaledHeight() / 2;
         g.fill(cx - 1, cy - 5, cx + 1, cy + 6, primary);
@@ -157,12 +146,12 @@ public final class ClientPulseClient implements ClientModInitializer {
     }
 
     private static int animatedColor(int a, int b, long time) {
-        float phase = (Mth.sin((time % 2400L) / 2400f * Mth.TWO_PI) + 1f) * 0.5f;
+        double phase = (Math.sin((time % 2400L) / 2400.0 * Math.PI * 2.0) + 1.0) * 0.5;
         int ar = (a >> 16) & 255, ag = (a >> 8) & 255, ab = a & 255;
         int br = (b >> 16) & 255, bg = (b >> 8) & 255, bb = b & 255;
-        int r = Mth.lerpInt(phase, ar, br);
-        int g = Mth.lerpInt(phase, ag, bg);
-        int bl = Mth.lerpInt(phase, ab, bb);
+        int r = (int) (ar + (br - ar) * phase);
+        int g = (int) (ag + (bg - ag) * phase);
+        int bl = (int) (ab + (bb - ab) * phase);
         return 0xFF000000 | (r << 16) | (g << 8) | bl;
     }
 
